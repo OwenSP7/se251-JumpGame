@@ -88,7 +88,7 @@ states[`game`] = function()
             ground.x = 10000;
             player.score += 2;
             console.log(player.score)
-            scoreBoard[0].innerText = "Score ";
+            scoreBoard[0].innerText = "Score: " + String(player.score);
         }
     })
 
