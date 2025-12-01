@@ -83,12 +83,12 @@ states[`game`] = function()
         }
         while(i.collidePoint(player.bottom()) && player.vy > 1)
         {
-            console.log(0)
             player.y--;
             player.vy = -30;
             ground.x = 10000;
             player.score += 2;
             console.log(player.score)
+            scoreBoard[0].innerText = "Score ";
         }
     })
 
