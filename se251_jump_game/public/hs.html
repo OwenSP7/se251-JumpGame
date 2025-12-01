@@ -12,24 +12,84 @@
         <section id="game">
             <div id="score">
                 <div>
-                    <p id="score" class="score">score: 0</p>
-                    <!--<p class="anim">0</p>-->
+                    <p class="score" id="final-score">score: 0</p>
                 </div>
                 <div>
-                    <p id="high-score" class="score">highscore: 0</p>
-                    <!--<p class="anim">0</p>-->
+                    <p class="score" id="high-score">highscore: 0</p>
                 </div>
             </div>
-            <canvas id="jump" width="800" height="800"></canvas>
+
+            <!--Leaderboard -->
+            <div id="leaderboard" style="text-align:center; margin-top:20px;">
+                <h3>Top 5 Scores</h3>
+                <ol id="leaderboard-list" style="list-style:none; padding:0;"></ol>
+            </div>
+
+            <!--Initial entry -->
+            <div id="highscore-input" style="text-align:center; margin-top:20px;">
+                <p>Enter your initials (3 letters):</p>
+                <input 
+                    type="text" 
+                    id="initials" 
+                    maxlength="3"
+                    style="text-transform:uppercase; font-size:1.2em;"
+                    autofocus
+                >
+                <button id="save-score">Save</button>
+            </div>
         </section>
     </main>
-   
-    <script src="js/Box.js"></script>
-    <script src="js/keyboard.js"></script>
-    <script src="js/jump.js"></script>
- 
-    
-        
- 
+
+    <script>
+        //Get the score from the game
+        const params = new URLSearchParams(window.location.search);
+        const score = parseInt(params.get("score")) || 0;
+        document.getElementById("final-score").innerText = "score: " + score;
+
+        //Load leaderboard (top 5)
+        let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+        let highScore = leaderboard[0] ? leaderboard[0].score : 0;
+        document.getElementById("high-score").innerText = "highscore: " + highScore;
+
+        //Display leaderboard
+        function renderLeaderboard() {
+            const list = document.getElementById("leaderboard-list");
+            list.innerHTML = "";
+
+            leaderboard
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 5)
+                .forEach((entry, i) => {
+                    const li = document.createElement("li");
+                    li.innerText = `${i + 1}. ${entry.initials} - ${entry.score}`;
+                    list.appendChild(li);
+                });
+        }
+        renderLeaderboard();
+
+        //On save button click
+        document.getElementById("save-score").addEventListener("click", function () {
+            let initials = document.getElementById("initials").value.toUpperCase();
+
+            if (initials.length !== 3) {
+                alert("Please enter EXACTLY 3 letters.");
+                return;
+            }
+
+            //Add new score
+            leaderboard.push({ initials, score });
+
+            //Sort & keep only top 5
+            leaderboard = leaderboard.sort((a, b) => b.score - a.score).slice(0, 5);
+
+            //Save back to localStorage
+            localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+
+            alert("Score saved!");
+
+            //Restart game
+            window.location = "index.html"; // Change if your game is in a different file
+        });
+    </script>
 </body>
 </html>
