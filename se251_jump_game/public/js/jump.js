@@ -39,7 +39,7 @@ function init()
 
 states[`death`] = function()
 {
-    window.location = `hs.html`
+    window.location = "hs.html?score=" + player.score;
    
 }
 states[`pause`] = function(){
