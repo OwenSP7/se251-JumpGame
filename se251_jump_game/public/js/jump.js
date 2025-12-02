@@ -13,6 +13,7 @@ var plat = [
     new Box().setProps({fill:`#883333`, h:64, w:200, y:-c.height/2, vy:5 }),
     new Box().setProps({fill:`#883333`, h:64, w:200, y:-c.height, vy:5}),
 ]
+
 init();
 
 //Main Game Loop
@@ -35,11 +36,18 @@ function init()
     //timer to make the game run at 60fps
     clearTimeout(timer);
     timer = setInterval(main, 1000/60);
+
+    if(localStorage.getItem("localHighScore"))
+    {
+    player.highscore = localStorage.getItem("localHighScore")
+    }
+    scoreBoard[0].innerText = "Score: " + String(player.score);
+    scoreBoard[1].innerText = "HighScore: " + String(player.highscore);
 }
 
 states[`death`] = function()
 {
-    window.location = "hs.html?score=" + player.score;
+    window.location = "hs.html?score=" + player.score + "&highscore=" + player.highscore;
    
 }
 states[`pause`] = function(){
@@ -88,7 +96,13 @@ states[`game`] = function()
             ground.x = 10000;
             player.score += 2;
             console.log(player.score)
+            if(player.highscore < player.score)
+            {
+                player.highscore = player.score;
+            }
+            localStorage.setItem("localHighScore", player.highscore);
             scoreBoard[0].innerText = "Score: " + String(player.score);
+            scoreBoard[1].innerText = "HighScore: " + String(player.highscore);
         }
     })
 

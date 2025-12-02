@@ -44,12 +44,13 @@
         //Get the score from the game
         const params = new URLSearchParams(window.location.search);
         const score = parseInt(params.get("score")) || 0;
-        document.getElementById("final-score").innerText = "score: " + score;
+        const highScore = parseInt(params.get("highscore")) || 0;
+        document.getElementById("final-score").innerText = "Score: " + score;
 
         //Load leaderboard (top 5)
         let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-        let highScore = leaderboard[0] ? leaderboard[0].score : 0;
-        document.getElementById("high-score").innerText = "highscore: " + highScore;
+        //let highScore = leaderboard[0] ? leaderboard[0].score : 0;
+        document.getElementById("high-score").innerText = "Highscore: " + highScore;
 
         //Display leaderboard
         function renderLeaderboard() {
