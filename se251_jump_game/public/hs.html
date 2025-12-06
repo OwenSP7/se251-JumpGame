@@ -1,96 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PONG</title>
-    <link rel="stylesheet" href="css/jump.css">
+  <meta charset="UTF-8">
+  <title>High Scores</title>
+  <link rel="stylesheet" href="css/jump.css"> <!-- keep your original styling -->
 </head>
 <body>
-    <main>
-        <section id="game">
-            <div id="score">
-                <div>
-                    <p class="score" id="final-score">score: 0</p>
-                </div>
-                <div>
-                    <p class="score" id="high-score">highscore: 0</p>
-                </div>
-            </div>
+  <main>
+    <section id="highScoresPage">
+      <h1>High Scores</h1>
 
-            <!--Leaderboard -->
-            <div id="leaderboard" style="text-align:center; margin-top:20px;">
-                <h3>Top 5 Scores</h3>
-                <ol id="leaderboard-list" style="list-style:none; padding:0;"></ol>
-            </div>
+      <!-- Scores list -->
+      <div id="scores"></div>
 
-            <!--Initial entry -->
-            <div id="highscore-input" style="text-align:center; margin-top:20px;">
-                <p>Enter your initials (3 letters):</p>
-                <input 
-                    type="text" 
-                    id="initials" 
-                    maxlength="3"
-                    style="text-transform:uppercase; font-size:1.2em;"
-                    autofocus
-                >
-                <button id="save-score">Save</button>
-            </div>
-        </section>
-    </main>
+      <!-- Save form -->
+      <form id="saveForm">
+        <label for="name">Enter your initials:</label>
+        <input type="text" id="name" required>
+        <button type="submit">Save Score</button>
+      </form>
 
-    <script>
-        //Get the score from the game
-        const params = new URLSearchParams(window.location.search);
-        const score = parseInt(params.get("score")) || 0;
-        const highScore = parseInt(params.get("highscore")) || 0;
-        document.getElementById("final-score").innerText = "Score: " + score;
+      <!-- Back link -->
+      <a href="index.html">Back to Start</a>
+    </section>
+  </main>
 
-        //Load leaderboard (top 5)
-        let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-        //let highScore = leaderboard[0] ? leaderboard[0].score : 0;
-        document.getElementById("high-score").innerText = "Highscore: " + highScore;
+  <script>
+    // Get score from query string
+    const params = new URLSearchParams(window.location.search);
+    const score = params.get("score");
 
-        //Display leaderboard
-        function renderLeaderboard() {
-            const list = document.getElementById("leaderboard-list");
-            list.innerHTML = "";
+    // Handle save form
+    document.getElementById("saveForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
 
-            leaderboard
-                .sort((a, b) => b.score - a.score)
-                .slice(0, 5)
-                .forEach((entry, i) => {
-                    const li = document.createElement("li");
-                    li.innerText = `${i + 1}. ${entry.initials} - ${entry.score}`;
-                    list.appendChild(li);
-                });
-        }
-        renderLeaderboard();
+      fetch("http://localhost:3000/jeep", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, score })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert("Score saved!");
+        // ✅ Redirect back to game start
+        window.location.href = "index.html?restart=true";
+      })
+      .catch(err => console.error("Error saving score:", err));
+    });
 
-        //On save button click
-        document.getElementById("save-score").addEventListener("click", function () {
-            let initials = document.getElementById("initials").value.toUpperCase();
-
-            if (initials.length !== 3) {
-                alert("Please enter EXACTLY 3 letters.");
-                return;
-            }
-
-            //Add new score
-            leaderboard.push({ initials, score });
-
-            //Sort & keep only top 5
-            leaderboard = leaderboard.sort((a, b) => b.score - a.score).slice(0, 5);
-
-            //Save back to localStorage
-            localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-
-            alert("Score saved!");
-
-            //Restart game
-            window.location = "index.html"; // Change if your game is in a different file
-        });
-    </script>
+    // Load scores from server
+    fetch("http://localhost:3000/jeep")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("scores").innerHTML =
+          data.map(s => `<p>${s.name}: ${s.score}</p>`).join("");
+      })
+      .catch(err => console.error("Error loading scores:", err));
+  </script>
 </body>
 </html>
+

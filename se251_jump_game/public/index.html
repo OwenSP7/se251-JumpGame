@@ -1,35 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PONG</title>
-    <link rel="stylesheet" href="css/jump.css">
+  <meta charset="UTF-8">
+  <title>Jump Game</title>
+  <link rel="stylesheet" href="css/jump.css">
 </head>
 <body>
-    <main>
-        <section id="game">
-            <div id="score">
-                <div>
-                    <p class="score">score: 0</p>
-                    <!--<p class="anim">0</p>-->
-                </div>
-                <div>
-                    <p class="score">highscore: 0</p>
-                    <!--<p class="anim">0</p>-->
-                </div>
-            </div>
-            <canvas id="jump" width="800" height="800"></canvas>
-        </section>
-    </main>
+  <main>
+    <!-- Start Page -->
+    <section id="startPage">
+      <h1>Jump Game</h1>
+      <button id="startBtn">Start Game</button>
+      <a href="hs.html">View High Scores</a>
+    </section>
 
-    <script src="js/Box.js"></script>
-    <script src="js/keyboard.js"></script>
-    <script src="js/jump.js"></script>
-   
-    
-        
- 
+    <!-- Game Section (hidden until start) -->
+    <section id="game" style="display:none;">
+      <div id="score">
+        <div><p class="score">Score: 0</p></div>
+        <div><p class="score">HighScore: 0</p></div>
+      </div>
+      <canvas id="jump" width="800" height="800"></canvas>
+    </section>
+  </main>
+
+  <script src="js/Box.js"></script>
+  <script src="js/keyboard.js"></script>
+  <script src="js/jump.js"></script>
+
+  <script>
+    // Start button → manual start
+    document.getElementById("startBtn").addEventListener("click", () => {
+      document.getElementById("startPage").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      startGame(); // global from jump.js
+    });
+
+    // Auto-restart only if redirected with ?restart=true
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("restart") === "true") {
+      document.getElementById("startPage").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      startGame();
+    }
+  </script>
 </body>
 </html>

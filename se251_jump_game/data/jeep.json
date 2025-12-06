@@ -1,1 +1,22 @@
-[{"make":"Chevy","model":"Corvette","year":"2010"},{"make":"Chevy","model":"Corvette","year":"2010"},{"make":"bobby","model":"Corvette","year":"2010"}]
+[
+  {
+    "name": "jda",
+    "score": 38
+  },
+  {
+    "name": "dew",
+    "score": 8
+  },
+  {
+    "name": "GJK",
+    "score": 6
+  },
+  {
+    "name": "LKJ",
+    "score": 6
+  },
+  {
+    "name": "asd",
+    "score": 6
+  }
+]
