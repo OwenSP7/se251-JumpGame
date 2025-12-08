@@ -40,18 +40,20 @@ function init() {
   scoreBoard = document.querySelectorAll(`#score div p`);
   currentState = `game`;
 
-  clearTimeout(timer);
+  clearTimeout(timer) ;
   timer = setInterval(main, 1000 / 60);
 
   // reset score
+  let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+  let highScore = leaderboard[0] ? leaderboard[0].score : 0;
   player.score = 0;
-  player.highscore = player.highscore || 0;
+  player.highscore = highScore
 
   scoreBoard[0].innerText = "Score: " + String(player.score);
   scoreBoard[1].innerText = "HighScore: " + String(player.highscore);
 }
 
-// Death state → redirect to high score page
+// Death state redirect to high score page
 states[`death`] = function () {
   console.log("Redirecting to hs.html with score:", player.score);
   window.location = "hs.html?score=" + player.score + "&highscore=" + player.highscore;
@@ -123,7 +125,7 @@ function rand(low, high) {
   return Math.random() * (high - low) + low;
 }
 
-// ✅ Global startGame wrapper
+// Global startGame wrapper
 function startGame() {
   init();
 }
