@@ -55,6 +55,29 @@
         let highScore = leaderboard[0] ? leaderboard[0].score : 0;
         document.getElementById("high-score").innerText = "Highscore: " + highScore;
 
+        async function load(e){
+        var promise = await fetch("http://localhost:3000/jeep");
+        var data = await promise.json(data)
+        let sortedData = data.sort((a, b) => (b.year - a.year));
+        console.log(sortedData)
+
+        var output = document.querySelector(`#leaderboard-list`);
+        var message =``
+        for(let i=0; i<data.length; i++)
+        {
+            message += `<div class="item">`
+                for(let prop in data[i])
+                {
+                    message += `<p>${prop}:${data[i][prop]}</p>`
+                }
+        }
+
+        output.innerHTML = message
+
+        //query select all the buttons
+    }
+
+    load();
 
         //Display leaderboard
         function renderLeaderboard() {
@@ -98,7 +121,6 @@
 
 
             alert("Score saved!");
-
 
             //Restart game
             window.location = "index.html"; // Change if your game is in a different file

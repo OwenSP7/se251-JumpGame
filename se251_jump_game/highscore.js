@@ -13,6 +13,12 @@ app.use(express.urlencoded({ extended: true }));
 
 const scoreFile = path.join(__dirname, 'data', 'jeep.json');
 
+app.get('/bob', (req, res) => {
+ const filePath = path.join(__dirname, `public`, `index.html`)
+  res.sendFile(filePath);
+});
+
+
 // Get scores
 app.get('/jeep', (req, res) => {
   let scores = [];
